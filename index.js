@@ -29,13 +29,30 @@ app.get('/files/:filename',function(req,res){
     // res.render("index");//it reaches to the ejs file in views
 });
 
+app.get('/edit/:filename',function(req,res){
+        res.render('edit',{filename:req.params.filename});
+    // res.render("index");//it reaches to the ejs file in views
+});
+app.post('/edit',function(req,res){
+    console.log(req.body);//checkpoint
+    
+    const oldPath=`./files/${req.body.previous}`;
+    const newPath=`./files/${req.body.newName.split(" ").join('')}.txt`;
+    fs.rename(oldPath,newPath, function(err){
+        if(err){
+            console.log(err);
+            return res.send("Rename failed");
+            
+        }
+        res.redirect('/');
+    });
+    
+});
+
 
 app.post('/create',function(req,res){
     fs.writeFile(`./files/${req.body.title.split(' ').join('')}.txt`,req.body.details, (err)=>{
         res.redirect('/');
-        if(err){
-
-        }
     })
     // console.log(req.body.title);for testing
     // console.log(req.body.details);
